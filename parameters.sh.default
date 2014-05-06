@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# git's parameters
+# ================
+GIT_USERNAME=""
+GIT_EMAIL=""
+
+# PHP's parameters
+# ================
+PHP_DATE_TIMEZONE="UTC"
+
+# application's configuration
+# ===========================
+INIT_APPLICATION=false
+
+APPLICATION_NAME=""
+APPLICATION_SERVER_NAME=""
+APPLICATION_ROOT=""
+
+PROJECT_GIT_REPOSITORY=""
+PROJECT_GIT_BRANCH="master"
+
+DO_COMPOSER_INSTALL=false

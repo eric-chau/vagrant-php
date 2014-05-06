@@ -1,0 +1,7 @@
+/.vagrant/*
+parameters.sh
+
+/nginx/*
+!/nginx/default.dist
+
+/www
