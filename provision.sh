@@ -118,7 +118,7 @@ then
         cp /vagrant/nginx/default.dist /etc/nginx/sites-enabled/$APPLICATION_NAME
         
         # set application server name...
-        sed 's/APPLICATION_SERVER_NAME#'$APPLICATION_SERVER_NAME'#g' /etc/nginx/sites-enabled/$APPLICATION_NAME > /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp
+        sed 's#APPLICATION_SERVER_NAME#'$APPLICATION_SERVER_NAME'#g' /etc/nginx/sites-enabled/$APPLICATION_NAME > /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp
         mv /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp /etc/nginx/sites-enabled/$APPLICATION_NAME
 
         # set application root index...
