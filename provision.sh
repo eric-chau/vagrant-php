@@ -82,12 +82,10 @@ mv /etc/php5/fpm/php.ini.tmp /etc/php5/fpm/php.ini
 if [ ! -s "/var/www/$APPLICATION_NAME" ];
 then
     
-    if [ ! -s "/vagrant/www" ];
+    if [ ! -s "/var/www" ];
     then
-        mkdir /vagrant/www
+        mkdir /var/www
     fi
-
-    ln -fs /vagrant/www /var/www
 
     cd /var/www
     curl -sS https://getcomposer.org/installer | php
@@ -135,3 +133,17 @@ then
     service nginx restart
 
 fi
+
+# Samba's installation and configuration
+# ======================================
+apt-get install -y samba
+
+# +++ configuring samba...
+service smbd stop
+rm -rf /etc/samba/smb.conf
+cp /vagrant/samba/smb.conf.dist /etc/samba/smb.conf
+service smbd start
+
+# +++ configuring user...
+echo -ne "$SAMBA_PASSWORD\n$SAMBA_PASSWORD\n" | smbpasswd -L -a $SAMBA_USER
+smbpasswd -L -e $SAMBA_USER

@@ -17,3 +17,9 @@ APPLICATION_ROOT=""
 
 PROJECT_GIT_REPOSITORY=""
 PROJECT_GIT_BRANCH="master"
+
+# Samba's parameters
+# ==================
+# DO NOT FORGET TO CONFIGURE YOUR "samba/smb.conf" "valid users" property!
+SAMBA_USER="vagrant"
+SAMBA_PASSWORD="vagrant"
