@@ -10,7 +10,7 @@ apt-get dist-upgrade
 
 
 
-# Essential packages (git, vim, curl, build-essential)
+# Essential packages (vim, curl, build-essential)
 # ==================
 apt-get install -y build-essential vim curl
 
@@ -20,7 +20,9 @@ apt-get install -y python-software-properties
 
 # Git's installation and configuration
 # ====================================
-apt-get install -y git-core
+add-apt-repository ppa:git-core/ppa
+apt-get update
+apt-get install -y git-core git
 
 git config --global color.ui true           # enable color
 git config --global core.fileMode false     # ignore file chmod
@@ -32,8 +34,13 @@ git config --global user.email $GIT_EMAIL
 
 # Nginx's installation and configuration
 # ======================================
-apt-get install -y nginx
+ 
+# +++ adding nginx 1.6 repositories...
+add-apt-repository ppa:nginx/stable
+apt-get update
 
+# +++ installing nginx 1.6...
+apt-get install -y nginx
 
 
 # MariaDB's installation
@@ -55,8 +62,8 @@ export DEBIAN_FRONTEND=dialog
 # ==============================
 
 # +++ adding php 5.5.x repositories...
-# add-apt-repository ppa:ondrej/php5
-# apt-get update
+add-apt-repository ppa:ondrej/php5
+apt-get update
 
 # +++ installing php 5.5.x and its tools...
 apt-get install -y php5-cli php5-mysql php5-curl php5-mcrypt php5-gd php-pear php5-xdebug php5-intl php5-fpm
