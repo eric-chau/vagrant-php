@@ -34,7 +34,7 @@ git config --global user.email $GIT_EMAIL
 
 # Nginx's installation and configuration
 # ======================================
- 
+
 # +++ adding nginx 1.6 repositories...
 add-apt-repository ppa:nginx/stable
 apt-get update
@@ -66,7 +66,7 @@ add-apt-repository ppa:ondrej/php5
 apt-get update
 
 # +++ installing php 5.5.x and its tools...
-apt-get install -y php5-cli php5-mysql php5-curl php5-mcrypt php5-gd php-pear php5-xdebug php5-intl php5-fpm
+apt-get install -y php5-cli php5-mysql php5-sqlite php5-curl php5-mcrypt php5-gd php-pear php5-xdebug php5-intl php5-fpm
 
 # +++ configuring xdebug for php-cli...
 echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/cli/php.ini
@@ -88,7 +88,7 @@ mv /etc/php5/fpm/php.ini.tmp /etc/php5/fpm/php.ini
 # ===========================
 if [ ! -s "/var/www/$APPLICATION_NAME" ];
 then
-    
+
     if [ ! -s "/var/www" ];
     then
         mkdir /var/www
@@ -121,7 +121,7 @@ then
         cp /vagrant/nginx/$APPLICATION_NAME /etc/nginx/sites-enabled/$APPLICATION_NAME
     else
         cp /vagrant/nginx/default.dist /etc/nginx/sites-enabled/$APPLICATION_NAME
-        
+
         # set application server name...
         sed 's#APPLICATION_SERVER_NAME#'$APPLICATION_SERVER_NAME'#g' /etc/nginx/sites-enabled/$APPLICATION_NAME > /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp
         mv /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp /etc/nginx/sites-enabled/$APPLICATION_NAME
