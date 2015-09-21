@@ -8,12 +8,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Box's configurations
   # ====================
-  config.vm.box = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+  config.vm.box = "ubuntu/trusty64"
 
   config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--memory", "4096"]
-    vb.customize ["modifyvm", :id, "--name", "Ro0ny's box"]
+    vb.customize ["modifyvm", :id, "--memory", "8196"]
+    vb.customize ["modifyvm", :id, "--name", "devbox"]
   end
 
   # Network's configurations
