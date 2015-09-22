@@ -97,5 +97,5 @@ mv composer.phar /usr/local/bin/composer
 # ====================
 
 apt-get install -y nodejs npm
-
+ln -s /usr/bin/nodejs /usr/bin/node
 
