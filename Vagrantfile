@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--memory", "8196"]
-    vb.customize ["modifyvm", :id, "--name", "devbox"]
+    vb.customize ["modifyvm", :id, "--name", "devbox v2"]
   end
 
   # Network's configurations
@@ -24,7 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Folders sync configuration
   # ==========================
-  config.vm.synced_folder "~/.ssh", "/root/.ssh" # sync ssh's folder
+  config.vm.synced_folder "~/.ssh", "/root/.ssh"
 
   # Provision's configuration
   # =========================

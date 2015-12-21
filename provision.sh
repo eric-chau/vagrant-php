@@ -25,8 +25,6 @@ git config --global core.fileMode false     # ignore file chmod
 git config --global user.name "Eric Chau"
 git config --global user.email eriic.chau@gmail.com
 
-
-
 # Nginx's installation and configuration
 # ======================================
 
@@ -49,27 +47,32 @@ export DEBIAN_FRONTEND=dialog
 # PHP and its tools installation
 # ==============================
 
-# +++ adding php 5.6.x repositories...
-add-apt-repository ppa:ondrej/php5-5.6
+add-apt-repository ppa:ondrej/php-7.0
 apt-get update
 
-# +++ installing php 5.6.x and its tools...
-apt-get install -y php5-cli php5-mysql php5-sqlite php5-curl php5-mcrypt php5-gd php-pear php5-xdebug php5-intl php5-fpm
+apt-get install -y php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-gd
 
 # +++ configuring xdebug for php-cli...
-echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/cli/php.ini
+# echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/cli/php.ini
 
 # +++ configuring xdebug for php-fpm...
-echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/fpm/php.ini
+# echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/fpm/php.ini
 
 # +++ configuring php-cli date timezone...
-sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php5/cli/php.ini > /etc/php5/cli/php.ini.tmp
-mv /etc/php5/cli/php.ini.tmp /etc/php5/cli/php.ini
+sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php/7.0/cli/php.ini > /etc/php/7.0/cli/php.ini.tmp
+mv /etc/php/7.0/cli/php.ini.tmp /etc/php/7.0/cli/php.ini
 
 # +++ configuring php-fpm date timezone...
-sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php5/fpm/php.ini > /etc/php5/fpm/php.ini.tmp
-mv /etc/php5/fpm/php.ini.tmp /etc/php5/fpm/php.ini
+sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php/7.0/fpm/php.ini > /etc/php/7.0/fpm/php.ini.tmp
+mv /etc/php/7.0/fpm/php.ini.tmp /etc/php/7.0/fpm/php.ini
 
+# Composer's installation
+# =======================
+
+cd /var/www
+curl -sS https://getcomposer.org/installer | php
+chmod +x composer.phar
+mv composer.phar /usr/local/bin/composer
 
 # Samba's installation and configuration
 # ======================================
@@ -85,17 +88,8 @@ service smbd start
 echo -ne "vagrant\nvagrant\n" | smbpasswd -L -a vagrant
 smbpasswd -L -e vagrant
 
-# Composer's installation
-# =======================
-
-cd /var/www
-curl -sS https://getcomposer.org/installer | php
-chmod +x composer.phar
-mv composer.phar /usr/local/bin/composer
-
 # Nodejs' installation
 # ====================
 
 apt-get install -y nodejs npm
 ln -s /usr/bin/nodejs /usr/bin/node
-
