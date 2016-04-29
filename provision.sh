@@ -47,10 +47,10 @@ export DEBIAN_FRONTEND=dialog
 # PHP and its tools installation
 # ==============================
 
-add-apt-repository ppa:ondrej/php-7.0
+add-apt-repository ppa:ondrej/php
 apt-get update
 
-apt-get install -y php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-gd
+apt-get install -y php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-gd php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
 
 # +++ configuring xdebug for php-cli...
 # echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/cli/php.ini
