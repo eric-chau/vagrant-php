@@ -8,12 +8,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Box's configurations
   # ====================
-  config.vm.box = "deb64"
-  config.vm.box_url = "https://googledrive.com/host/0B83ZToJ3fGtDVC1DeVVzc3lkc0U/debian-7.5.0-amd64_virtualbox.box"
+  config.vm.box = "ubuntu/trusty64"
 
   config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--memory", "4096"]
-    vb.customize ["modifyvm", :id, "--name", "Ro0ny's box"]
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+    vb.customize ["modifyvm", :id, "--name", "devbox-php7"]
   end
 
   # Network's configurations
@@ -25,7 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Folders sync configuration
   # ==========================
-  config.vm.synced_folder "~/.ssh", "/root/.ssh" # sync ssh's folder
+  config.vm.synced_folder "~/.ssh", "/root/.ssh"
 
   # Provision's configuration
   # =========================

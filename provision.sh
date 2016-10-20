@@ -1,137 +1,93 @@
 #!/bin/bash
 
-# Include parameters
-source /vagrant/parameters.sh
-
 # Update the box repositories and update debian's components
 # ==========================================================
 apt-get update
 apt-get dist-upgrade
 
 
-
-# Essential packages (git, vim, curl, build-essential)
+# Essential packages (vim, curl, build-essential)
 # ==================
 apt-get install -y build-essential vim curl
 
 apt-get install -y python-software-properties
 
 
-
 # Git's installation and configuration
 # ====================================
-apt-get install -y git-core
+add-apt-repository ppa:git-core/ppa
+apt-get update
+apt-get install -y git-core git
 
 git config --global color.ui true           # enable color
-git config --global core.fileMode false     # ignore file chmod
 
-git config --global user.name "$GIT_USERNAME"
-git config --global user.email $GIT_EMAIL
-
-
+git config --global user.name "Eric Chau"
+git config --global user.email eriic.chau@gmail.com
 
 # Nginx's installation and configuration
 # ======================================
+
+# +++ adding nginx 1.6 repositories...
+add-apt-repository ppa:nginx/stable
+apt-get update
+
+# +++ installing nginx 1.6...
 apt-get install -y nginx
 
 
-
-# MariaDB's installation
+# MySQL's installation
 # ======================
 
-# +++ adding mariadb repositories...
-apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xcbcb082a1bb943db
-add-apt-repository 'deb http://ftp.igh.cnrs.fr/pub/mariadb/repo/10.0/debian wheezy main'
-apt-get update
-
-# +++ installing mariadb...
 export DEBIAN_FRONTEND=noninteractive
-apt-get install -y mariadb-server
+apt-get install -y mysql-server-5.6
 export DEBIAN_FRONTEND=dialog
-
 
 
 # PHP and its tools installation
 # ==============================
 
-# +++ adding php 5.5.x repositories...
-# add-apt-repository ppa:ondrej/php5
-# apt-get update
+add-apt-repository ppa:ondrej/php
+apt-get update
 
-# +++ installing php 5.5.x and its tools...
-apt-get install -y php5-cli php5-mysql php5-curl php5-mcrypt php5-gd php-pear php5-xdebug php5-intl php5-fpm
+apt-get install -y php7.1 php7.1-fpm php7.1-mysql php7.1-curl php7.1-intl php7.1-gd php7.1-mbstring php7.1-xml php7.1-zip php7.1-mcrypt
 
-# +++ configuring xdebug for php-cli...
-echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/cli/php.ini
+# Composer's installation
+# =======================
 
-# +++ configuring xdebug for php-fpm...
-echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/fpm/php.ini
+cd /var/www
+curl -sS https://getcomposer.org/installer | php
+chmod +x composer.phar
+mv composer.phar /usr/local/bin/composer
 
-# +++ configuring php-cli date timezone...
-sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php5/cli/php.ini > /etc/php5/cli/php.ini.tmp
-mv /etc/php5/cli/php.ini.tmp /etc/php5/cli/php.ini
+# SSH Key and folders
+# ===================
 
-# +++ configuring php-fpm date timezone...
-sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php5/fpm/php.ini > /etc/php5/fpm/php.ini.tmp
-mv /etc/php5/fpm/php.ini.tmp /etc/php5/fpm/php.ini
+cp /root/.ssh/id_rsa /home/vagrant/.ssh/
+cp /root/.ssh/id_rsa.pub /home/vagrant/.ssh/
 
+chown -R vagrant: /home/vagrant/.ssh/
 
+chmod 700 /home/vagrant/.ssh/id_rsa
+chmod 700 /home/vagrant/.ssh/id_rsa.pub
 
-# Application's configuration
-# ===========================
-if [ ! -s "/var/www/$APPLICATION_NAME" ];
-then
-    
-    if [ ! -s "/vagrant/www" ];
-    then
-        mkdir /vagrant/www
-    fi
+chown -R vagrant: /var/www
 
-    ln -fs /vagrant/www /var/www
+# Samba's installation and configuration
+# ======================================
+apt-get install -y samba
 
-    cd /var/www
-    curl -sS https://getcomposer.org/installer | php
+# +++ configuring samba...
+service smbd stop
+rm -rf /etc/samba/smb.conf
+cp /vagrant/samba/smb.conf.dist /etc/samba/smb.conf
+service smbd start
 
-    if [ "$PROJECT_GIT_REPOSITORY" != "" ];
-    then
-        # cloning the project...
-        git clone $PROJECT_GIT_REPOSITORY /var/www/$APPLICATION_NAME
-        cd /var/www/$APPLICATION_NAME
+# +++ configuring user...
+echo -ne "vagrant\nvagrant\n" | smbpasswd -L -a vagrant
+smbpasswd -L -e vagrant
 
-        if [ "$PROJECT_GIT_BRANCH" != "master" ];
-        then
-            # create new branch locally
-            git checkout -b $PROJECT_GIT_BRANCH --track origin/$PROJECT_GIT_BRANCH
-        fi
+# Nodejs' installation
+# ====================
 
-        if [ -f "/var/www/$APPLICATION_NAME/composer.json" ];
-        then
-            php /var/www/composer.phar self-update
-            php /var/www/composer.phar update
-        fi
-    fi
-
-    if [ -f "/vagrant/nginx/$APPLICATION_NAME" ];
-    then
-        cp /vagrant/nginx/$APPLICATION_NAME /etc/nginx/sites-enabled/$APPLICATION_NAME
-    else
-        cp /vagrant/nginx/default.dist /etc/nginx/sites-enabled/$APPLICATION_NAME
-        
-        # set application server name...
-        sed 's#APPLICATION_SERVER_NAME#'$APPLICATION_SERVER_NAME'#g' /etc/nginx/sites-enabled/$APPLICATION_NAME > /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp
-        mv /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp /etc/nginx/sites-enabled/$APPLICATION_NAME
-
-        # set application root index...
-        sed 's#APPLICATION_ROOT#'$APPLICATION_NAME$APPLICATION_ROOT'#g' /etc/nginx/sites-enabled/$APPLICATION_NAME > /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp
-        mv /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp /etc/nginx/sites-enabled/$APPLICATION_NAME
-
-        # set application error log and access log
-        sed 's#APPLICATION_ERROR_LOG#'$APPLICATION_NAME'#g' /etc/nginx/sites-enabled/$APPLICATION_NAME > /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp
-        mv /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp /etc/nginx/sites-enabled/$APPLICATION_NAME
-        sed 's#APPLICATION_ACCESS_LOG#'$APPLICATION_NAME'#g' /etc/nginx/sites-enabled/$APPLICATION_NAME > /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp
-        mv /etc/nginx/sites-enabled/$APPLICATION_NAME.tmp /etc/nginx/sites-enabled/$APPLICATION_NAME
-    fi
-
-    service nginx restart
-
-fi
+apt-get install -y nodejs npm
+ln -s /usr/bin/nodejs /usr/bin/node
