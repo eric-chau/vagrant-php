@@ -20,7 +20,6 @@ apt-get update
 apt-get install -y git-core git
 
 git config --global color.ui true           # enable color
-git config --global core.fileMode false     # ignore file chmod
 
 git config --global user.name "Eric Chau"
 git config --global user.email eriic.chau@gmail.com
@@ -40,7 +39,7 @@ apt-get install -y nginx
 # ======================
 
 export DEBIAN_FRONTEND=noninteractive
-apt-get install -y mysql-server
+apt-get install -y mysql-server-5.6
 export DEBIAN_FRONTEND=dialog
 
 
@@ -50,21 +49,7 @@ export DEBIAN_FRONTEND=dialog
 add-apt-repository ppa:ondrej/php
 apt-get update
 
-apt-get install -y php7.0 php7.0-fpm php7.0-mysql php7.0-curl php7.0-intl php7.0-gd php7.0-mbstring php7.0-xml php7.0-zip php7.0-mcrypt
-
-# +++ configuring xdebug for php-cli...
-# echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/cli/php.ini
-
-# +++ configuring xdebug for php-fpm...
-# echo -e "\n[xdebug]\nxdebug.max_nesting_level = 250\nxdebug.var_display_max_depth = 7" >> /etc/php5/fpm/php.ini
-
-# +++ configuring php-cli date timezone...
-sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php/7.0/cli/php.ini > /etc/php/7.0/cli/php.ini.tmp
-mv /etc/php/7.0/cli/php.ini.tmp /etc/php/7.0/cli/php.ini
-
-# +++ configuring php-fpm date timezone...
-sed 's#;date.timezone\([[:space:]]*\)=*#date.timezone\1=\1\"'"$PHP_DATE_TIMEZONE"'\"#g' /etc/php/7.0/fpm/php.ini > /etc/php/7.0/fpm/php.ini.tmp
-mv /etc/php/7.0/fpm/php.ini.tmp /etc/php/7.0/fpm/php.ini
+apt-get install -y php7.1 php7.1-fpm php7.1-mysql php7.1-curl php7.1-intl php7.1-gd php7.1-mbstring php7.1-xml php7.1-zip php7.1-mcrypt
 
 # Composer's installation
 # =======================
@@ -73,6 +58,19 @@ cd /var/www
 curl -sS https://getcomposer.org/installer | php
 chmod +x composer.phar
 mv composer.phar /usr/local/bin/composer
+
+# SSH Key and folders
+# ===================
+
+cp /root/.ssh/id_rsa /home/vagrant/.ssh/
+cp /root/.ssh/id_rsa.pub /home/vagrant/.ssh/
+
+chown -R vagrant: /home/vagrant/.ssh/
+
+chmod 700 /home/vagrant/.ssh/id_rsa
+chmod 700 /home/vagrant/.ssh/id_rsa.pub
+
+chown -R vagrant: /var/www
 
 # Samba's installation and configuration
 # ======================================
