@@ -1,10 +1,11 @@
 #!/bin/bash
 
+export DEBIAN_FRONTEND=noninteractive
+
 # Update the box repositories and update debian's components
 # ==========================================================
 apt-get update
 apt-get dist-upgrade
-
 
 # Essential packages (vim, curl, build-essential)
 # ==================
@@ -38,10 +39,11 @@ apt-get install -y nginx
 # MySQL's installation
 # ======================
 
-export DEBIAN_FRONTEND=noninteractive
 apt-get install -y mysql-server-5.6
-export DEBIAN_FRONTEND=dialog
 
+mysql -e "CREATE USER 'vagrant'@'localhost' IDENTIFIED BY '';"
+mysql -e "GRANT ALL PRIVILEGES ON * . * TO 'vagrant'@'localhost';"
+mysql -e "FLUSH PRIVILEGES;"
 
 # PHP and its tools installation
 # ==============================
@@ -91,3 +93,22 @@ smbpasswd -L -e vagrant
 
 apt-get install -y nodejs npm
 ln -s /usr/bin/nodejs /usr/bin/node
+
+# Elasticsearch's install
+# =======================
+
+apt-get update
+apt-get install openjdk-7-jre
+
+add-apt-repository -y ppa:webupd8team/java
+apt-get update
+apt-get -y install oracle-java8-installer
+
+wget https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/deb/elasticsearch/2.4.1/elasticsearch-2.4.1.deb
+dpkg -i elasticsearch-2.4.1.deb
+update-rc.d elasticsearch defaults
+service elasticsearch start
+rm elasticsearch-2.4.1.deb
+
+export DEBIAN_FRONTEND=dialog
+
