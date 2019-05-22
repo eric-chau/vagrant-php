@@ -1,0 +1,11 @@
+
+[shared]
+
+path =  /var/www
+browseable = yes
+read only = no
+guest ok = no
+create mask = 0777
+directory mask = 0777
+hide dot files = no
+valid users = vagrant
